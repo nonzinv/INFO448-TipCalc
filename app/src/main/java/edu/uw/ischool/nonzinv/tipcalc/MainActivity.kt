@@ -23,24 +23,16 @@ class MainActivity : AppCompatActivity() {
         TipButton.isEnabled = false
         BillAmount.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                enableButton(s.toString())
+                TipButton.isEnabled = s.toString().isNotEmpty()
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
         TipButton.setOnClickListener {
-            calculate()
+            val amount = BillAmount.text.toString().replace("$", "").toDoubleOrNull()
+            val tip = amount?.times(0.15)
+            val total = DecimalFormat("$#.##").format(tip)
+            Toast.makeText(this, "Tip: $total", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun enableButton(amount: String) {
-        TipButton.isEnabled = amount.isNotEmpty()
-    }
-
-    private fun calculate() {
-        val amount = BillAmount.text.toString().replace("$", "").toDoubleOrNull()
-        val tip = amount?.times(0.15)
-        val total = DecimalFormat("$#.##").format(tip)
-        Toast.makeText(this, "Tip: $total", Toast.LENGTH_SHORT).show()
     }
 }
